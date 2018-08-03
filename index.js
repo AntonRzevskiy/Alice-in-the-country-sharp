@@ -1,3 +1,7 @@
+// тест подключения SDK
+const Alice = require('yandex-dialogs-sdk');
+const alice = new Alice();
+
 // Для асинхронной работы используется пакет micro.
 const { json } = require('micro');
 
