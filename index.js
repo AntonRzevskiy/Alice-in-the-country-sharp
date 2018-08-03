@@ -1,31 +1,24 @@
-// тест подключения SDK
+// Подключение SDK
 const Alice = require('yandex-dialogs-sdk');
 const alice = new Alice();
 
-// Для асинхронной работы используется пакет micro.
-const { json } = require('micro');
+// Приветственная фраза
+alice.command('', ctx => {
 
-// Запуск асинхронного сервиса.
-module.exports = async req => {
+    ctx.reply('Привет! Меня зовут Алиса. Угадай о какой песне идет речь.');
 
-  // Из запроса извлекаются свойства request, session и version.
-  const { request, session, version } = await json(req);
+});
 
-  // В тело ответа вставляются свойства version и session из запроса.
-  // Подробнее о формате запроса и ответа — в разделе Протокол работы навыка.
-  return {
-    version,
-    session,
-    response: {
+// Вопрос про правила
+alice.command(/как ирать|правила/, ctx => {
 
-      // В свойстве response.text возвращается исходная реплика пользователя.
-      // Если навык был активирован без дополнительной команды,
-      // пользователю нужно сказать "Hello!".
-      text: request.original_utterance || 'Hello!',
+    ctx.reply('Правила? Какие правила?');
 
-      // Свойство response.end_session возвращается со значением false,
-      // чтобы диалог не завершался.
-      end_session: false,
-    },
-  };
-};
+});
+
+// Любая другая команда
+alice.any(ctx => {
+
+    ctx.reply('Может еще подумаем?');
+
+});

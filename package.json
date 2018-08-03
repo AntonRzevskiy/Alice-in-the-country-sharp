@@ -1,11 +1,10 @@
 {
     "private": true,
     "scripts": {
-        "start": "micro"
+        "start": "yandex-dialogs-sdk"
     },
 
     "dependencies": {
-        "micro": "^9.1.0",
         "yandex-dialogs-sdk": "latest"
     }
 }
