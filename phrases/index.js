@@ -13,7 +13,7 @@ const Phrases = class {
     get( phrase ) {
         if( this.phrases.hasOwnProperty( phrase ) ) {
             console.log( this.phrases[ phrase ] );
-            return _( this.phrases[ phrase ] );
+            return this.phrases[ phrase ] [0];
         }
         return 'Не понимаю о чем вы!';
     }
