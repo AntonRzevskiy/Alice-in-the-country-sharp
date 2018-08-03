@@ -1,7 +1,7 @@
 {
     "private": true,
     "scripts": {
-        "start": "yandex-dialogs-sdk"
+        "start": "index.js"
     },
 
     "dependencies": {
