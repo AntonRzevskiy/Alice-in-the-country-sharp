@@ -5,6 +5,7 @@
     },
 
     "dependencies": {
-        "yandex-dialogs-sdk": "latest"
+        "yandex-dialogs-sdk": "latest",
+        "lodash": "latest"
     }
 }
