@@ -19,4 +19,4 @@ const Phrases = class {
 
 };
 
-exports.Phrases = Phrases;
+module.exports = Phrases;
