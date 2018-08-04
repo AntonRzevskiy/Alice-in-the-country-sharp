@@ -12,12 +12,23 @@ alice.command('', ctx => {
 
     const phrase = phrases.get('greeting');
 
-    console.log( ctx );
-    console.log( ctx.replyBuilder );
+    try {
+        console.log( '-------- ctx.replyBuilder' );
+        console.log( ctx.replyBuilder );
+        console.log( '--------' );
+        console.log( '-------- ctx.replyBuilder tts' );
+        console.log( ctx.replyBuilder.tts( phrase.text + ' это ттс' ) );
+        console.log( '--------' );
+        console.log( '--------' );
+    }
 
     const replyMessage = ctx.replyBuilder
         .text( phrase.text )
         .get();
+
+    console.log( '-------- replyMessage' );
+    console.log( replyMessage );
+    console.log( '--------' );
 
     ctx.reply( replyMessage );
 
