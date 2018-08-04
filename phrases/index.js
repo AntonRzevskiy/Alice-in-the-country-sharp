@@ -11,9 +11,12 @@ const Phrases = class {
 
     get( phrase ) {
         if( this.phrases.hasOwnProperty( phrase ) ) {
-            return sample( this.phrases[ phrase ] );
+
+            const ph = sample( this.phrases[ phrase ] );
+
+            return ph;
         }
-        return 'Не понимаю о чем вы!';
+        return {'text': 'Не понимаю о чем вы!'};
     }
 
 
