@@ -1,7 +1,6 @@
 
-// Подключение lodash для синонимов
-const _ = require('lodash');
-// use - ${_()}
+// Подключение lodash sample для синонимов
+const { sample } = require('lodash');
 
 const Phrases = class {
 
@@ -12,10 +11,9 @@ const Phrases = class {
 
     get( phrase ) {
         if( this.phrases.hasOwnProperty( phrase ) ) {
-            console.log( _( this.phrases[ phrase ] ) );
-            return this.phrases[ phrase ] [0];
+            return sample( this.phrases[ phrase ] );
         }
-        return 'Не понимаю о чем вы говорите!';
+        return 'Не понимаю о чем вы!';
     }
 
 
