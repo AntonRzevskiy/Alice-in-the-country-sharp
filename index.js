@@ -11,7 +11,7 @@ const phrases = new Phrases();
 alice.command('', ctx => {
 
     const phrase = phrases.get('greeting');
-    const replyMessage = ctx.replyBuilder();
+    const replyMessage = ctx.replyBuilder;
 
     replyMessage.text( phrase.text );
 
