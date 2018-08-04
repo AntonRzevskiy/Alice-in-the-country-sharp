@@ -20,7 +20,7 @@ alice.command('', ctx => {
         console.log( ctx.replyBuilder.tts( phrase.text + ' это ттс' ) );
         console.log( '--------' );
         console.log( '--------' );
-    }
+    } catch( ex ) {};
 
     const replyMessage = ctx.replyBuilder
         .text( phrase.text )
