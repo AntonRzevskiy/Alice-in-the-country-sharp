@@ -15,7 +15,9 @@ alice.command('', ctx => {
     console.log( ctx );
     console.log( ctx.replyBuilder );
 
-    const replyMessage = ctx.replyBuilder.text( phrase.text );
+    const replyMessage = ctx.replyBuilder
+        .text( phrase.text )
+        .get();
 
     ctx.reply( replyMessage );
 
