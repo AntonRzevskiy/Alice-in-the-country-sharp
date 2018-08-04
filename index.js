@@ -5,12 +5,17 @@ const alice = new Alice();
 
 // Подключение Фраз
 const Phrases = require('./phrases');
-const phrase = new Phrases();
+const phrases = new Phrases();
 
 // Приветственная фраза
 alice.command('', ctx => {
 
-    ctx.reply( phrase.get('greeting') );
+    const phrase = phrases.get('greeting');
+    const replyMessage = ctx.replyBuilder();
+
+    replyMessage.text( phrase.text );
+
+    ctx.reply( replyMessage );
 
 });
 
