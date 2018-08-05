@@ -1,6 +1,8 @@
 
 // Подключение SDK
 const Alice = require('yandex-dialogs-sdk');
+const Scene = require('yandex-dialogs-sdk').Scene;
+
 const alice = new Alice();
 
 // Подключение Фраз
@@ -10,7 +12,7 @@ const phrases = new Phrases();
 const User = {};
 
 // Приветственная фраза
-alice.command('', ctx => {
+alice.welcome(ctx => {
 
     if( ! User[ ctx.userId ] ) {
         User[ ctx.userId ] = {};
@@ -24,8 +26,7 @@ alice.command('', ctx => {
         ctx.replyBuilder[ p ]( phrase[ p ] );
     }
 
-    ctx.reply( ctx.replyBuilder.get() );
-
+    return ctx.reply( ctx.replyBuilder.get() );
 });
 
 // Вопрос про правила
@@ -38,9 +39,28 @@ alice.command(/как ирать|правила/, ctx => {
         ctx.replyBuilder[ p ]( phrase[ p ] );
     }
 
-    ctx.reply( ctx.replyBuilder.get() );
-
+    return ctx.reply( ctx.replyBuilder.get() );
 });
+
+// игра
+const game = new Scene('guessing-song');
+
+game.enter(['я готов', 'давай играть', 'начинаем', 'поехали'], ctx => {
+    
+    return ctx.reply('Давай!');
+});
+
+game.command('мы уже играем', ctx => ctx => {
+    
+    return ctx.reply('Конечно!');
+});
+
+game.leave(['мне надоело', 'я устал', 'скучно', 'стоп'], ctx => ctx => {
+    
+    return ctx.reply('Не расстраивайтесь, это всего лишь игра.');
+});
+
+alice.registerScene( game );
 
 // Любая другая команда
 alice.any(ctx => {
@@ -52,8 +72,7 @@ alice.any(ctx => {
         ctx.replyBuilder[ p ]( phrase[ p ] );
     }
 
-    ctx.reply( ctx.replyBuilder.get() );
-
+    return ctx.reply( ctx.replyBuilder.get() );
 });
 
 // Привязать к порту
