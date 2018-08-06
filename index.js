@@ -13,15 +13,8 @@ const phrases = new Phrases();
 const Songs = require('./songs');
 const songs = new Songs();
 
-const User = {};
-
 // Приветственная фраза
 alice.welcome(ctx => {
-
-    if( ! User[ ctx.userId ] ) {
-        User[ ctx.userId ] = {};
-        console.log( 'new user - ' + ctx.userId );
-    }
 
     let phrase = phrases.get('greeting');
 
@@ -51,8 +44,6 @@ let game = new Scene( songs.get() );
 
 game.enter(['готов', 'играть', 'начинаем', 'поехали', 'могу', 'давай'], ctx => {
 
-    console.log( game.name );
-
     let phrase = game.name.puzzle;
 
     for( let p in phrase ) {
@@ -72,6 +63,14 @@ game.command(['повтори', 'подскажи'], ctx => {
         ctx.replyBuilder[ p ]( phrase[ p ] );
     }
 
+    // тест
+    phrase = phrases.get('repeat_song');
+
+    for( p in phrase ) {
+
+        ctx.replyBuilder[ p ]( phrase[ p ] + ctx.replyBuilder[ p ] );
+    }
+
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
@@ -89,10 +88,25 @@ game.command('уже играем', ctx => {
 
 game.leave(['надоело', 'устал', 'скучно', 'стоп'], ctx => {
 
+    // пометить как неугаданную
+    songs.setUnsolved( game.name.key );
+
     // установить новую песню
     game.name = songs.get();
 
     let phrase = phrases.get('leave_game');
+
+    for( let p in phrase ) {
+
+        ctx.replyBuilder[ p ]( phrase[ p ] );
+    }
+
+    return ctx.reply( ctx.replyBuilder.get() );
+});
+
+game.any(ctx => {
+
+    let phrase = phrases.get('game_any');
 
     for( let p in phrase ) {
 
