@@ -17,11 +17,10 @@ const Songs = class {
     }
 
     get( key ) {
-        let song, _key;
 
         if( this.songs.hasOwnProperty( key ) ) {
 
-            song = this.songs[ key ];
+            let song = this.songs[ key ];
             song.key = key;
 
             return song;
@@ -32,6 +31,10 @@ const Songs = class {
 
     getNew() {
         let song, keys, key;
+
+        console.log( '--------- keys = ?' );
+        console.log( this );
+        console.log( '---------' );
 
         keys = Object.keys( this.songs );
 
@@ -45,6 +48,10 @@ const Songs = class {
         }
 
         if( keys.length === 0 ) {
+
+            console.log( '--------- keys = 0' );
+            console.log( this );
+            console.log( '---------' );
 
             this.wasteSongs = {
                 solved: {},
@@ -64,12 +71,16 @@ const Songs = class {
 
     // поместить в разгаданные
     setSolved( key ) {
-        return !!( this.wasteSongs.solved[ key ] = key );
+        this.wasteSongs.solved[ key ] = key;
     }
 
     // поместить в неразгаданные
     setUnsolved( key ) {
-        return !!( this.wasteSongs.unsolved[ key ] = key );
+        this.wasteSongs.unsolved[ key ] = key;
+        console.log( '--------- setUnsolved' );
+        console.log( key );
+        console.log( this );
+        console.log( '---------' );
     }
 
     isSolved( key ) {
