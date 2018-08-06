@@ -47,23 +47,58 @@ alice.command(/как ирать|правила/, ctx => {
 });
 
 // игра
-const game = new Scene( songs.get() );
+let game = game || new Scene( songs.get() );
 
-game.enter(['готов', 'играть', 'начинаем', 'поехали', 'могу'], ctx => {
+game.enter(['готов', 'играть', 'начинаем', 'поехали', 'могу', 'давай'], ctx => {
 
     console.log( game.name );
 
-    return ctx.reply('Давай!');
+    let phrase = game.name.puzzle;
+
+    for( let p in phrase ) {
+
+        ctx.replyBuilder[ p ]( phrase[ p ] );
+    }
+
+    return ctx.reply( ctx.replyBuilder.get() );
 });
 
-game.command('мы уже играем', ctx => {
+game.command(['повтори', 'подскажи'], ctx => {
 
-    return ctx.reply('Конечно!');
+    let phrase = game.name.puzzle;
+
+    for( let p in phrase ) {
+
+        ctx.replyBuilder[ p ]( phrase[ p ] );
+    }
+
+    return ctx.reply( ctx.replyBuilder.get() );
+});
+
+game.command('уже играем', ctx => {
+
+    let phrase = phrases.get('is_game');
+
+    for( let p in phrase ) {
+
+        ctx.replyBuilder[ p ]( phrase[ p ] );
+    }
+
+    return ctx.reply( ctx.replyBuilder.get() );
 });
 
 game.leave(['надоело', 'устал', 'скучно', 'стоп'], ctx => {
 
-    return ctx.reply('Не расстраивайтесь, это всего лишь игра.');
+    game = undefined;
+
+    let phrase = phrases.get('leave_game');
+
+    for( let p in phrase ) {
+
+        ctx.replyBuilder[ p ]( phrase[ p ] );
+    }
+
+    return ctx.reply( ctx.replyBuilder.get() );
 });
 
 alice.registerScene( game );
