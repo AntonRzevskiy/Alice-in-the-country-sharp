@@ -88,6 +88,24 @@ game.command('уже играем', ctx => {
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
+game.leave(game.name.name.text, ctx => {
+
+    // пометить как угаданную
+    songs.setSolved( game.name.key );
+
+    // установить новую песню
+    game.name = songs.get();
+
+    let phrase = phrases.get('win_game');
+
+    for( let p in phrase ) {
+
+        ctx.replyBuilder[ p ]( phrase[ p ] );
+    }
+
+    return ctx.reply( ctx.replyBuilder.get() );
+});
+
 game.leave(['надоело', 'устал', 'скучно', 'стоп', 'хватит'], ctx => {
 
     // пометить как неугаданную
@@ -119,7 +137,6 @@ game.any(ctx => {
 });
 
 alice.registerScene( game );
-console.log( game );
 /**
  * Конец игровой
  */
