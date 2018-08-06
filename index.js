@@ -88,6 +88,7 @@ game.command('уже играем', ctx => {
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
+console.log( game.name.name.text );
 game.leave(game.name.name.text, ctx => {
 
     // пометить как угаданную
