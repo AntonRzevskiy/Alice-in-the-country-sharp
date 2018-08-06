@@ -45,7 +45,7 @@ alice.command(/как ирать|правила/, ctx => {
 // игра
 const game = new Scene('guessing-song');
 
-game.enter(['готов', 'играть', 'начинаем', 'поехали'], ctx => {
+game.enter(['готов', 'играть', 'начинаем', 'поехали', 'могу'], ctx => {
     
     return ctx.reply('Давай!');
 });
