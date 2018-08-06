@@ -46,23 +46,19 @@ alice.command(/как ирать|правила/, ctx => {
 const game = new Scene('guessing-song');
 
 game.enter(['готов', 'играть', 'начинаем', 'поехали', 'могу'], ctx => {
-    
-    console.log( ctx );
-    console.log( '----' );
-    console.log( game );
-    console.log( '----' );
-    console.log( this );
-    
+
+    console.log( game.name );
+
     return ctx.reply('Давай!');
 });
 
 game.command('мы уже играем', ctx => {
-    
+
     return ctx.reply('Конечно!');
 });
 
 game.leave(['надоело', 'устал', 'скучно', 'стоп'], ctx => {
-    
+
     return ctx.reply('Не расстраивайтесь, это всего лишь игра.');
 });
 
