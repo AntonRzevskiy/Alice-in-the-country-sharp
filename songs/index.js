@@ -32,20 +32,20 @@ const Songs = class {
     getNew() {
         let song, keys, key;
 
-        console.log( '--------- keys = ?' );
-        console.log( this );
-        console.log( '---------' );
-
         keys = Object.keys( this.songs );
 
         for( key = keys.length - 1; key >= 0; key-- ) {
 
             if( this.isSolved( keys[ key ] ) || this.isUnsolved( keys[ key ] ) ) {
 
-                keys.pop();
+                keys.splice( key, 1 );
             }
 
         }
+
+        console.log( '--------- keys' );
+        console.log( keys );
+        console.log( '---------' );
 
         if( keys.length === 0 ) {
 
