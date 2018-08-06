@@ -47,6 +47,12 @@ const game = new Scene('guessing-song');
 
 game.enter(['готов', 'играть', 'начинаем', 'поехали', 'могу'], ctx => {
     
+    console.log( ctx );
+    console.log( '----' );
+    console.log( game );
+    console.log( '----' );
+    console.log( this );
+    
     return ctx.reply('Давай!');
 });
 
