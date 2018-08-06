@@ -89,7 +89,7 @@ game.command('уже играем', ctx => {
 
 game.leave(['надоело', 'устал', 'скучно', 'стоп'], ctx => {
 
-    game = undefined;
+    // game = undefined;
 
     let phrase = phrases.get('leave_game');
 
