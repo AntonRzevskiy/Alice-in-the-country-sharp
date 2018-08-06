@@ -39,7 +39,10 @@ alice.command(/как ирать|правила/, ctx => {
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-// игра
+/**
+ * Точка входа в игру
+ *
+ */
 let game = new Scene( songs.get() );
 
 game.enter(['готов', 'играть', 'начинаем', 'поехали', 'могу', 'давай'], ctx => {
@@ -54,7 +57,7 @@ game.enter(['готов', 'играть', 'начинаем', 'поехали', 
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-game.command(['повтори', 'подскажи'], ctx => {
+game.command(['повтори', 'подскажи', 'давай'], ctx => {
 
     let phrase = game.name.puzzle;
 
@@ -63,8 +66,7 @@ game.command(['повтори', 'подскажи'], ctx => {
         ctx.replyBuilder[ p ]( phrase[ p ] );
     }
 
-    // тест
-    phrase = phrases.get('repeat_song');
+    phrase = phrases.get('game_repeat');
 
     for( p in phrase ) {
 
@@ -86,7 +88,7 @@ game.command('уже играем', ctx => {
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-game.leave(['надоело', 'устал', 'скучно', 'стоп'], ctx => {
+game.leave(['надоело', 'устал', 'скучно', 'стоп', 'хватит'], ctx => {
 
     // пометить как неугаданную
     songs.setUnsolved( game.name.key );
@@ -117,6 +119,23 @@ game.any(ctx => {
 });
 
 alice.registerScene( game );
+console.log( game );
+/**
+ * Конец игровой
+ */
+
+// Выход из навыка
+alice.command(['выйти', 'уйти'], ctx => {
+
+    let phrase = phrases.get('goodbye');
+
+    for( let p in phrase ) {
+
+        ctx.replyBuilder[ p ]( phrase[ p ] );
+    }
+
+    return ctx.goodbye( ctx.replyBuilder.get() );
+});
 
 // Любая другая команда
 alice.any(ctx => {

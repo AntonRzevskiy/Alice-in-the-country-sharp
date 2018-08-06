@@ -43,15 +43,7 @@ const Songs = class {
 
         }
 
-        console.log( '--------- keys' );
-        console.log( keys );
-        console.log( '---------' );
-
         if( keys.length === 0 ) {
-
-            console.log( '--------- keys = 0' );
-            console.log( this );
-            console.log( '---------' );
 
             this.wasteSongs = {
                 solved: {},
@@ -77,10 +69,6 @@ const Songs = class {
     // поместить в неразгаданные
     setUnsolved( key ) {
         this.wasteSongs.unsolved[ key ] = key;
-        console.log( '--------- setUnsolved' );
-        console.log( key );
-        console.log( this );
-        console.log( '---------' );
     }
 
     isSolved( key ) {
