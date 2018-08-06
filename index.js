@@ -88,8 +88,7 @@ game.command('уже играем', ctx => {
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-console.log( game.name.name.text );
-game.leave(game.name.name.text, ctx => {
+game.leave('my_secret_key', ctx => {
 
     // пометить как угаданную
     songs.setSolved( game.name.key );
@@ -126,6 +125,13 @@ game.leave(['надоело', 'устал', 'скучно', 'стоп', 'хва�
 });
 
 game.any(ctx => {
+
+    let regex = new RegExp( game.name.name.text, 'i' );
+
+    if( regex.test( ctx.originalUtterance ) ) {
+
+        game.leave.call( null, 'my_secret_key', ctx );
+    }
 
     let phrase = phrases.get('game_any');
 
