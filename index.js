@@ -9,6 +9,10 @@ const alice = new Alice();
 const Phrases = require('./phrases');
 const phrases = new Phrases();
 
+// Подключение песен
+const Songs = require('./songs');
+const songs = new Songs();
+
 const User = {};
 
 // Приветственная фраза
@@ -43,7 +47,7 @@ alice.command(/как ирать|правила/, ctx => {
 });
 
 // игра
-const game = new Scene('guessing-song');
+const game = new Scene( songs.get() );
 
 game.enter(['готов', 'играть', 'начинаем', 'поехали', 'могу'], ctx => {
 
