@@ -9,14 +9,22 @@ const Songs = class {
         this.songs = require('./ru.json');
     }
 
-    get( song ) {
-        if( this.songs.hasOwnProperty( song ) ) {
+    get( key ) {
+        let song;
+        let _key;
 
-            const ph = sample( this.songs[ song ] );
+        if( this.songs.hasOwnProperty( key ) ) {
 
-            return ph;
+            song = this.songs[ key ];
+
+            return song;
         }
-        return {'text': 'Не понимаю о чем вы!'};
+
+        _key = sample( Object.keys( this.songs ) );
+        song = this.songs[ _key ];
+        song.key = _key;
+
+        return song;
     }
 
 
