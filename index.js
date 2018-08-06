@@ -89,7 +89,8 @@ game.command('уже играем', ctx => {
 
 game.leave(['надоело', 'устал', 'скучно', 'стоп'], ctx => {
 
-    // game = undefined;
+    // установить новую песню
+    game.name = songs.get();
 
     let phrase = phrases.get('leave_game');
 
