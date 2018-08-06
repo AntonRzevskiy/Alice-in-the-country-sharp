@@ -47,7 +47,7 @@ alice.command(/как ирать|правила/, ctx => {
 });
 
 // игра
-let game = game || new Scene( songs.get() );
+let game = new Scene( songs.get() );
 
 game.enter(['готов', 'играть', 'начинаем', 'поехали', 'могу', 'давай'], ctx => {
 
