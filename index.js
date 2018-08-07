@@ -59,18 +59,16 @@ game.enter(['готов', 'играть', 'начинаем', 'поехали', 
 
 game.command(['повтори', 'подскажи', 'давай'], ctx => {
 
-    let phrase = game.name.puzzle;
+    let puzzle = game.name.puzzle;
+    let phrase = phrases.get('game_repeat');
 
     for( let p in phrase ) {
 
-        ctx.replyBuilder[ p ]( phrase[ p ] );
-    }
-
-    phrase = phrases.get('game_repeat');
-
-    for( p in phrase ) {
-
-        ctx.replyBuilder[ p ]( phrase[ p ] + ctx.replyBuilder[ p ] );
+        if( puzzle.p ) {
+            ctx.replyBuilder[ p ]( phrase[ p ] + puzzle[ p ] );
+        } else {
+            ctx.replyBuilder[ p ]( phrase[ p ] );
+        }
     }
 
     return ctx.reply( ctx.replyBuilder.get() );
