@@ -88,24 +88,6 @@ game.command('уже играем', ctx => {
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-game.leave('my_secret_key', ctx => {
-
-    // пометить как угаданную
-    songs.setSolved( game.name.key );
-
-    // установить новую песню
-    game.name = songs.get();
-
-    let phrase = phrases.get('win_game');
-
-    for( let p in phrase ) {
-
-        ctx.replyBuilder[ p ]( phrase[ p ] );
-    }
-
-    return ctx.reply( ctx.replyBuilder.get() );
-});
-
 game.leave(['надоело', 'устал', 'скучно', 'стоп', 'хватит'], ctx => {
 
     // пометить как неугаданную
@@ -130,7 +112,23 @@ game.any(ctx => {
 
     if( regex.test( ctx.originalUtterance ) ) {
 
-        game.leave.call( null, 'my_secret_key', ctx );
+        // пометить как угаданную
+        songs.setSolved( game.name.key );
+
+        // установить новую песню
+        game.name = songs.get();
+
+        let phrase = phrases.get('win_game');
+
+        for( let p in phrase ) {
+
+            ctx.replyBuilder[ p ]( phrase[ p ] );
+        }
+
+        // выход на главный сценарий
+        ctx.leaveScene();
+
+        return ctx.reply( ctx.replyBuilder.get() );
     }
 
     let phrase = phrases.get('game_any');
