@@ -64,7 +64,7 @@ game.command(['повтори', 'подскажи', 'давай'], ctx => {
 
     for( let p in phrase ) {
 
-        if( puzzle.p ) {
+        if( puzzle[ p ] ) {
             ctx.replyBuilder[ p ]( phrase[ p ] + puzzle[ p ] );
         } else {
             ctx.replyBuilder[ p ]( phrase[ p ] );
