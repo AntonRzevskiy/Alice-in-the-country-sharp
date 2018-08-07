@@ -26,24 +26,6 @@ alice.welcome(ctx => {
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-// фикс стоп слов
-alice.command(ctx => {
-  if ( ctx.message.length < 4 ) {
-    return true;
-  }
-  return false;
-}, ctx => {
-
-    let phrase = phrases.get('any');
-
-    for( let p in phrase ) {
-
-        ctx.replyBuilder[ p ]( phrase[ p ] );
-    }
-
-    return ctx.reply( ctx.replyBuilder.get() );
-});
-
 // Вопрос про правила
 alice.command(/как ирать|правила/, ctx => {
 
@@ -66,24 +48,6 @@ let game = new Scene( songs.get() );
 game.enter(['готов', 'играть', 'начинаем', 'поехали', 'могу', 'давай'], ctx => {
 
     let phrase = game.name.puzzle;
-
-    for( let p in phrase ) {
-
-        ctx.replyBuilder[ p ]( phrase[ p ] );
-    }
-
-    return ctx.reply( ctx.replyBuilder.get() );
-});
-
-// фикс стоп слов
-game.command(ctx => {
-  if ( ctx.message.length < 4 ) {
-    return true;
-  }
-  return false;
-}, ctx => {
-
-    let phrase = phrases.get('game_any');
 
     for( let p in phrase ) {
 
