@@ -97,7 +97,7 @@ game.command('уже играем', ctx => {
 
 const leave = new Matcher();
 leave.add(['надоело', 'устал', 'скучно', 'стоп', 'хватит', 'выйти', 'уйти', '-^может'], () => {});
-game.command(ctx => leave.match( ctx.message ).check(), ctx => {
+game.leave(ctx => leave.match( ctx.message ).check(), ctx => {
 
     // пометить как неугаданную
     songs.setUnsolved( game.name.key );
