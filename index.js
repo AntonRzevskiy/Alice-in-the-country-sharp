@@ -50,7 +50,9 @@ alice.command(ctx => rules.match( ctx.message ).check(), ctx => {
  */
 const game = new Scene( songs.get() );
 
-game.enter(['готов', 'играть', 'начинаем', 'поехали', 'могу', 'давай'], ctx => {
+const enter = new Matcher();
+enter.add(['^готов$', '^играть', '-^как игра..', '^начина', 'поехали', 'могу', 'давай'], () => {});
+game.enter(ctx => enter.match( ctx.message ).check(), ctx => {
 
     let phrase = game.name.puzzle;
 
@@ -62,7 +64,9 @@ game.enter(['готов', 'играть', 'начинаем', 'поехали', 
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-game.command(['повтори', 'подскажи', 'давай'], ctx => {
+const reply = new Matcher();
+reply.add(['повтори', 'подскажи', 'давай'], () => {});
+game.command(ctx => reply.match( ctx.message ).check(), ctx => {
 
     let puzzle = game.name.puzzle;
     let phrase = phrases.get('game_repeat');
@@ -91,7 +95,9 @@ game.command('уже играем', ctx => {
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-game.leave(['надоело', 'устал', 'скучно', 'стоп', 'хватит'], ctx => {
+const leave = new Matcher();
+leave.add(['надоело', 'устал', 'скучно', 'стоп', 'хватит', 'выйти', 'уйти', '-^может'], () => {});
+game.command(ctx => leave.match( ctx.message ).check(), ctx => {
 
     // пометить как неугаданную
     songs.setUnsolved( game.name.key );
@@ -150,7 +156,7 @@ alice.registerScene( game );
  */
 
 // Выход из навыка
-alice.command(['выйти', 'уйти'], ctx => {
+alice.command(ctx => leave.match( ctx.message ).check(), ctx => {
 
     let phrase = phrases.get('goodbye');
 
