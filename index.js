@@ -13,6 +13,9 @@ const phrases = new Phrases();
 const Songs = require('./songs');
 const songs = new Songs();
 
+// Подключение matcher
+const Matcher = require('./matcher');
+
 // Приветственная фраза
 alice.welcome(ctx => {
 
@@ -27,7 +30,9 @@ alice.welcome(ctx => {
 });
 
 // Вопрос про правила
-alice.command(/как ирать|правила/, ctx => {
+const rules = new Matcher();
+rules.add(['^как игра..', '^правила', 'какие'], () => {});
+alice.command(ctx => rules.match( ctx.message ).check(), ctx => {
 
     let phrase = phrases.get('rule');
 
@@ -43,7 +48,7 @@ alice.command(/как ирать|правила/, ctx => {
  * Точка входа в игру
  *
  */
-let game = new Scene( songs.get() );
+const game = new Scene( songs.get() );
 
 game.enter(['готов', 'играть', 'начинаем', 'поехали', 'могу', 'давай'], ctx => {
 
