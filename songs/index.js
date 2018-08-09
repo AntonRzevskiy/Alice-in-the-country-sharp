@@ -33,6 +33,10 @@ const Songs = class {
         return this.songs[ this.getNewID() ];
     }
 
+    getPuzzle() {
+        return this.get().puzzle;
+    }
+
     getNewID() {
         let keys, key;
 
