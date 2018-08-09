@@ -48,13 +48,16 @@ alice.command(ctx => rules.match( ctx.message ).check(), ctx => {
  * Точка входа в игру
  *
  */
-const game = new Scene( songs.get() );
+const game = new Scene( 'song' );
 
 const enter = new Matcher();
 enter.add(['^готов$', '^играть', '-^как игра..', '^начина', 'поехали', 'могу', 'давай'], () => {});
 game.enter(ctx => enter.match( ctx.message ).check(), ctx => {
 
-    let phrase = game.name.puzzle;
+    // получить новый ID пени
+    ctx.gameId = songs.getNew();
+
+    let phrase = songs.get( ctx.gameId ).puzzle;
 
     for( let p in phrase ) {
 
@@ -68,7 +71,7 @@ const reply = new Matcher();
 reply.add(['повтори', 'подскажи', 'давай'], () => {});
 game.command(ctx => reply.match( ctx.message ).check(), ctx => {
 
-    let puzzle = game.name.puzzle;
+    let puzzle = songs.get( ctx.gameId ).puzzle;
     let phrase = phrases.get('game_repeat');
 
     for( let p in phrase ) {
@@ -100,10 +103,10 @@ leave.add(['надоело', 'устал', 'скучно', 'стоп', 'хват
 game.leave(ctx => leave.match( ctx.message ).check(), ctx => {
 
     // пометить как неугаданную
-    songs.setUnsolved( game.name.key );
+    songs.setUnsolved( ctx.gameId );
 
     // установить новую песню
-    game.name = songs.get();
+    ctx.gameId = songs.getNew();
 
     let phrase = phrases.get('leave_game');
 
@@ -117,15 +120,15 @@ game.leave(ctx => leave.match( ctx.message ).check(), ctx => {
 
 game.any(ctx => {
 
-    let regex = new RegExp( game.name.name.text, 'i' );
+    let regex = new RegExp( songs.get( ctx.gameId ).name.text, 'i' );
 
     if( regex.test( ctx.originalUtterance ) ) {
 
         // пометить как угаданную
-        songs.setSolved( game.name.key );
+        songs.setSolved( ctx.gameId );
 
         // установить новую песню
-        game.name = songs.get();
+        ctx.gameId = songs.getNew();
 
         let phrase = phrases.get('win_game');
 

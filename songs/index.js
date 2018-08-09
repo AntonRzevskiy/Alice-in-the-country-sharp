@@ -26,11 +26,11 @@ const Songs = class {
             return song;
         }
 
-        return this.getNew();
+        return this.songs[ this.getNew() ];
     }
 
     getNew() {
-        let song, keys, key;
+        let keys, key;
 
         keys = Object.keys( this.songs );
 
@@ -53,12 +53,7 @@ const Songs = class {
             return this.getNew();
         }
 
-        key = sample( keys );
-
-        song = this.songs[ key ];
-        song.key = key;
-
-        return song;
+        return sample( keys );
     }
 
     // поместить в разгаданные
