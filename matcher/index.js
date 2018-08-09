@@ -122,6 +122,15 @@ class Matcher {
 
     }
 
+    one( args = [], context = null ) {
+
+        if( ! this.relevance.length ) return;
+
+        this.relevance.sort( ( a, b ) => a.pr - b.pr );
+
+        return this.relevance[ 0 ].fn.apply( context, args );
+    }
+
     check() {
         return !!( this.relevance.length );
     }

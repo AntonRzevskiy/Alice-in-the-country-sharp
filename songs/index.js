@@ -14,22 +14,30 @@ const Songs = class {
             unsolved: {}
         };
 
+        this.current = this.getNewID();
+
     }
 
-    get( key ) {
+    get( key = undefined ) {
 
         if( this.songs.hasOwnProperty( key ) ) {
 
-            let song = this.songs[ key ];
-            song.key = key;
-
-            return song;
+            return this.songs[ key ];
         }
 
-        return this.songs[ this.getNew() ];
+        if( this.current ) {
+
+            return this.songs[ this.current ];
+        }
+
+        return this.songs[ this.getNewID() ];
     }
 
-    getNew() {
+    getPuzzle() {
+        return this.get().puzzle;
+    }
+
+    getNewID() {
         let keys, key;
 
         keys = Object.keys( this.songs );
@@ -50,28 +58,38 @@ const Songs = class {
                 unsolved: {}
             };
 
-            return this.getNew();
+            return this.getNewID();
         }
 
-        return sample( keys );
+        this.current = sample( keys );
+
+        return this.current;
     }
 
     // поместить в разгаданные
-    setSolved( key ) {
+    setSolved( key = this.current ) {
         this.wasteSongs.solved[ key ] = key;
+        return this;
     }
 
     // поместить в неразгаданные
-    setUnsolved( key ) {
+    setUnsolved( key = this.current ) {
         this.wasteSongs.unsolved[ key ] = key;
+        return this;
     }
 
-    isSolved( key ) {
+    isSolved( key = this.current ) {
         return !!( this.wasteSongs.solved[ key ] );
+        return this;
     }
 
-    isUnsolved( key ) {
+    isUnsolved( key = this.current ) {
         return !!( this.wasteSongs.unsolved[ key ] );
+        return this;
+    }
+
+    flush() {
+        this.current = undefined;
     }
 
 
