@@ -126,7 +126,7 @@ inGame.add(['^уже играем', '^мы в игре', '^играю$'], ctx =>
 inGame.add(['надоело', 'устал', 'скучно', 'стоп', 'хватит', 'выйти', 'уйти', '-^может'], ctx => {
 
     // пометить как неугаданную
-    songs.setUnsolved();
+    songs.setUnsolved().flush();
 
     let phrase = phrases.get('leave_game');
 
@@ -163,7 +163,7 @@ game.any(ctx => {
     if( regex.test( ctx.originalUtterance ) ) {
 
         // пометить как угаданную
-        songs.setSolved();
+        songs.setSolved().flush();
 
         let phrase = phrases.get('win_game');
 
