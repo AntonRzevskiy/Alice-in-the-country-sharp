@@ -70,13 +70,7 @@ lobby.add(['^готов$', '^играть', '-^как игра..', '^начин�
     });
     answer.add( song.win, ctx => {
 
-        // пометить как угаданную
-        songs.setSolved().flush();
-
-        // очистить для следующей
-        answer.clear();
-
-        let origin = songs.get().original.text;
+        let origin = songs.get().original;
         let phrase = phrases.get('win_game');
 
         for( let p in origin ) {
@@ -87,6 +81,12 @@ lobby.add(['^готов$', '^играть', '-^как игра..', '^начин�
                 ctx.replyBuilder[ p ]( phrase[ p ] );
             }
         }
+
+        // пометить как угаданную
+        songs.setSolved().flush();
+
+        // очистить для следующей
+        answer.clear();
 
         // выход в лобби
         ctx.leaveScene();
