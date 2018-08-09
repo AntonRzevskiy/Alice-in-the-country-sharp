@@ -88,6 +88,10 @@ const Songs = class {
         return this;
     }
 
+    flush() {
+        this.current = undefined;
+    }
+
 
 };
 
