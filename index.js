@@ -16,6 +16,14 @@ const songs = new Songs();
 // Подключение matcher
 const Matcher = require('./matcher');
 
+// игра
+const game = new Scene( 'song' );
+
+// матчеры
+const lobby = new Matcher();
+const inGame = new Matcher();
+
+
 // Приветственная фраза
 alice.welcome(ctx => {
 
@@ -30,9 +38,7 @@ alice.welcome(ctx => {
 });
 
 // Вопрос про правила
-const rules = new Matcher();
-rules.add(['^как игра..', '^правила', 'какие'], () => {});
-alice.command(ctx => rules.match( ctx.message ).check(), ctx => {
+lobby.add(['^как игра..', '^правила', 'какие'], ctx => {
 
     let phrase = phrases.get('rule');
 
@@ -44,20 +50,12 @@ alice.command(ctx => rules.match( ctx.message ).check(), ctx => {
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-/**
- * Точка входа в игру
- *
- */
-const game = new Scene( 'song' );
+// вход в игру
+lobby.add(['^готов$', '^играть', '-^как игра..', '^начина', 'поехали', 'могу', 'давай'], ctx => {
 
-const enter = new Matcher();
-enter.add(['^готов$', '^играть', '-^как игра..', '^начина', 'поехали', 'могу', 'давай'], () => {});
-game.enter(ctx => enter.match( ctx.message ).check(), ctx => {
+    ctx.enterScene( game );
 
-    // получить новый ID пени
-    ctx.gameId = songs.getNew();
-
-    let phrase = songs.get( ctx.gameId ).puzzle;
+    let phrase = songs.getPuzzle();
 
     for( let p in phrase ) {
 
@@ -67,11 +65,36 @@ game.enter(ctx => enter.match( ctx.message ).check(), ctx => {
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-const reply = new Matcher();
-reply.add(['повтори', 'подскажи', 'давай'], () => {});
-game.command(ctx => reply.match( ctx.message ).check(), ctx => {
+// Выход из навыка
+lobby.add(['надоело', 'устал', 'скучно', 'стоп', 'хватит', 'выйти', 'уйти', '-^может'], ctx => {
 
-    let puzzle = songs.get( ctx.gameId ).puzzle;
+    let phrase = phrases.get('goodbye');
+
+    for( let p in phrase ) {
+
+        ctx.replyBuilder[ p ]( phrase[ p ] );
+    }
+
+    return ctx.goodbye( ctx.replyBuilder.get() );
+});
+
+// Любая другая команда
+lobby.add([], ctx => {
+
+    let phrase = phrases.get('any');
+
+    for( let p in phrase ) {
+
+        ctx.replyBuilder[ p ]( phrase[ p ] );
+    }
+
+    return ctx.reply( ctx.replyBuilder.get() );
+}, 99);
+
+// подсказка в игре
+inGame.add(['повтори', 'подскажи', 'давай'], ctx => {
+
+    let puzzle = songs.getPuzzle();
     let phrase = phrases.get('game_repeat');
 
     for( let p in phrase ) {
@@ -86,7 +109,8 @@ game.command(ctx => reply.match( ctx.message ).check(), ctx => {
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-game.command('уже играем', ctx => {
+// вопрос о статусе в игре
+inGame.add(['^уже играем', '^мы в игре', '^играю$'], ctx => {
 
     let phrase = phrases.get('is_game');
 
@@ -98,15 +122,11 @@ game.command('уже играем', ctx => {
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-const leave = new Matcher();
-leave.add(['надоело', 'устал', 'скучно', 'стоп', 'хватит', 'выйти', 'уйти', '-^может'], () => {});
-game.leave(ctx => leave.match( ctx.message ).check(), ctx => {
+// выход в лобби (из игры)
+inGame.add(['надоело', 'устал', 'скучно', 'стоп', 'хватит', 'выйти', 'уйти', '-^может'], ctx => {
 
     // пометить как неугаданную
-    songs.setUnsolved( ctx.gameId );
-
-    // установить новую песню
-    ctx.gameId = songs.getNew();
+    songs.setUnsolved();
 
     let phrase = phrases.get('leave_game');
 
@@ -115,33 +135,13 @@ game.leave(ctx => leave.match( ctx.message ).check(), ctx => {
         ctx.replyBuilder[ p ]( phrase[ p ] );
     }
 
+    ctx.leaveScene();
+
     return ctx.reply( ctx.replyBuilder.get() );
 });
 
-game.any(ctx => {
-
-    let regex = new RegExp( songs.get( ctx.gameId ).name.text, 'i' );
-
-    if( regex.test( ctx.originalUtterance ) ) {
-
-        // пометить как угаданную
-        songs.setSolved( ctx.gameId );
-
-        // установить новую песню
-        ctx.gameId = songs.getNew();
-
-        let phrase = phrases.get('win_game');
-
-        for( let p in phrase ) {
-
-            ctx.replyBuilder[ p ]( phrase[ p ] );
-        }
-
-        // выход на главный сценарий
-        ctx.leaveScene();
-
-        return ctx.reply( ctx.replyBuilder.get() );
-    }
+// любая левая фраза
+inGame.add([], ctx => {
 
     let phrase = phrases.get('game_any');
 
@@ -151,38 +151,40 @@ game.any(ctx => {
     }
 
     return ctx.reply( ctx.replyBuilder.get() );
+
+}, 99);
+
+
+// прожиг
+game.any(ctx => {
+
+    let regex = new RegExp( songs.get().name.text, 'i' );
+
+    if( regex.test( ctx.originalUtterance ) ) {
+
+        // пометить как угаданную
+        songs.setSolved();
+
+        let phrase = phrases.get('win_game');
+
+        for( let p in phrase ) {
+
+            ctx.replyBuilder[ p ]( phrase[ p ] );
+        }
+
+        // выход в лобби
+        ctx.leaveScene();
+
+        return ctx.reply( ctx.replyBuilder.get() );
+    }
+
+    return inGame.match( ctx.message ).one([ ctx ]);
 });
 
+alice.any( ctx => lobby.match( ctx.message ).one([ ctx ]) );
+
+// регистрация игры
 alice.registerScene( game );
-/**
- * Конец игровой
- */
-
-// Выход из навыка
-alice.command(ctx => leave.match( ctx.message ).check(), ctx => {
-
-    let phrase = phrases.get('goodbye');
-
-    for( let p in phrase ) {
-
-        ctx.replyBuilder[ p ]( phrase[ p ] );
-    }
-
-    return ctx.goodbye( ctx.replyBuilder.get() );
-});
-
-// Любая другая команда
-alice.any(ctx => {
-
-    let phrase = phrases.get('any');
-
-    for( let p in phrase ) {
-
-        ctx.replyBuilder[ p ]( phrase[ p ] );
-    }
-
-    return ctx.reply( ctx.replyBuilder.get() );
-});
 
 // Привязать к порту
 alice.listen('/', 3000);
