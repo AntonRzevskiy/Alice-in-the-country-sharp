@@ -163,7 +163,7 @@ game.any(ctx => {
     if( regex.test( ctx.originalUtterance ) ) {
 
         // пометить как угаданную
-        songs.setSolved();
+        songs.setSolved().flush();
 
         let phrase = phrases.get('win_game');
 
