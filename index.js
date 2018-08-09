@@ -22,6 +22,7 @@ const game = new Scene( 'song' );
 // матчеры
 const lobby = new Matcher();
 const inGame = new Matcher();
+const answer = new Matcher();
 
 
 // Приветственная фраза
@@ -52,6 +53,46 @@ lobby.add(['^как игра..', '^правила', 'какие'], ctx => {
 
 // вход в игру
 lobby.add(['^готов$', '^играть', '-^как игра..', '^начина', 'поехали', 'могу', 'давай'], ctx => {
+
+    // добавить матчи для угадывания песни. Они идут вместе с песней.
+    const song = songs.get();
+
+    answer.add( song.close, ctx => {
+
+        let phrase = phrases.get('close_game');
+
+        for( let p in phrase ) {
+
+            ctx.replyBuilder[ p ]( phrase[ p ] );
+        }
+
+        return ctx.reply( ctx.replyBuilder.get() );
+    });
+    answer.add( song.win, ctx => {
+
+        // пометить как угаданную
+        songs.setSolved().flush();
+
+        // очистить для следующей
+        answer.clear();
+
+        let origin = songs.get().original.text;
+        let phrase = phrases.get('win_game');
+
+        for( let p in origin ) {
+
+            if( origin[ p ] ) {
+                ctx.replyBuilder[ p ]( phrase[ p ] + origin[ p ] );
+            } else {
+                ctx.replyBuilder[ p ]( phrase[ p ] );
+            }
+        }
+
+        // выход в лобби
+        ctx.leaveScene();
+
+        return ctx.reply( ctx.replyBuilder.get() );
+    });
 
     ctx.enterScene( game );
 
@@ -158,24 +199,9 @@ inGame.add([], ctx => {
 // прожиг
 game.any(ctx => {
 
-    let regex = new RegExp( songs.get().name.text, 'i' );
+    if( answer.match( ctx.message ).check() ) {
 
-    if( regex.test( ctx.originalUtterance ) ) {
-
-        // пометить как угаданную
-        songs.setSolved().flush();
-
-        let phrase = phrases.get('win_game');
-
-        for( let p in phrase ) {
-
-            ctx.replyBuilder[ p ]( phrase[ p ] );
-        }
-
-        // выход в лобби
-        ctx.leaveScene();
-
-        return ctx.reply( ctx.replyBuilder.get() );
+        return answer.one([ ctx ]);
     }
 
     return inGame.match( ctx.message ).one([ ctx ]);
