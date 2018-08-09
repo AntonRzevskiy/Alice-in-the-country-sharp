@@ -126,6 +126,10 @@ class Matcher {
         return !!( this.relevance.length );
     }
 
+    clear() {
+        this.matchers = [];
+    }
+
 
 };
 
